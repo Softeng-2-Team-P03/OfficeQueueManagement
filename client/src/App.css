@@ -1,0 +1,81 @@
+.vheight-100 {
+  min-height: 100vh;
+}
+
+.list-group-item {
+  background-color: transparent;
+}
+
+.important {
+  color: red;
+}
+
+.deletedTask {
+  background-color: #dc3545;
+}
+
+.updatedTask {
+  background-color: #ffc107;
+}
+
+.addedTask{
+  background-color: #28a745;
+}
+
+.fixed-right-bottom {
+  position: fixed;
+  right: 0;
+  bottom: 0;
+  z-index: 1030;
+  margin: 0 1.5rem 1.5rem 0;
+  border-radius: 50%;
+}
+
+.navlogo {
+  color: white;
+}
+
+.below-nav {
+  padding-top: 10px;
+  padding-left: 30px;
+}
+
+.modal-header {
+  background-color: #28a745;
+  color: white;
+}
+
+.noBorder{
+  border: none;
+}
+
+.navLinkStyle{
+  color: black;
+}
+
+.navLinkStyle:hover{
+  background-color: #9becae;
+  color: black;
+  transform: scale(1.05);
+  text-decoration: none;
+}
+
+.loginButton{
+  color: white;
+}
+
+.loginButton:hover{
+  color: white;
+  text-decoration: none;
+}
+
+.welcomeText{
+  color: #28a745;
+  text-align: center;
+}
+
+.noFilter{
+  border: none;
+  background-color: #28a745;
+  color: white;
+}
