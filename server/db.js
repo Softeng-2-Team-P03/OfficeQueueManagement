@@ -4,7 +4,7 @@
 const sqlite = require('sqlite3');
 
 // open the database
-const db = new sqlite.Database('tasks.db', (err) => {
+const db = new sqlite.Database('db-softeng2-project1.db', (err) => {
   if (err) throw err;
 });
 
