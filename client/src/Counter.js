@@ -12,7 +12,7 @@ function Counter() {
                 <thead>
                 <tr>
                     <th>Tipo Servizio</th>
-                    <th>N. Clienti Serviti</th>
+                    <th>N. Client Served</th>
                 </tr>
                 </thead>
                 <tbody>

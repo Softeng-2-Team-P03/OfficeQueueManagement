@@ -7,8 +7,9 @@ import {
     Route
 } from "react-router-dom";
 import Counter from "./Counter";
-import Officer from "./Officer";
+import Manager from "./Manager";
 import API from './API';
+import Officer from "./Officer";
 
 
 function App() {
@@ -17,11 +18,14 @@ function App() {
       <Router>
           <div>
               <Switch>
+                  <Route path="/officer">
+                      <Officer/>
+                  </Route>
                   <Route path="/counter">
                       <Counter />
                   </Route>
                   <Route path="/">
-                      <Officer/>
+                      <Manager/>
                   </Route>
               </Switch>
           </div>
