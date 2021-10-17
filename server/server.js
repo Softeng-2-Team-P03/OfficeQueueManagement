@@ -85,7 +85,7 @@ app.get('/api/counters/:counterId/currentTicket', [
                 return res.json({ ticketNumber: result })
             }
         } catch (err) {
-            res.status(500).end();
+            res.status(503).end();
         }
     }
 );
@@ -154,7 +154,7 @@ app.get('/api/counters/:counterId/nextTicket', [
                 res.json({ ticketNumber: ticketNum }); //ticket removed and currently served by that counter
             }
         } catch (err) {
-            res.status(500).end();
+            res.status(503).end();
         }
     }
 );
