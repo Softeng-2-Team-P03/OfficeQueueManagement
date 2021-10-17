@@ -74,8 +74,7 @@
 ```
 { 
     "id": id,
-    "username": "username",
-    "name": "name"
+    "username": "mail",
 }
 ``` 
 - Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (login failed)
@@ -89,8 +88,7 @@
 ```
 { 
     "id": id,
-    "username": "username",
-    "name": "name"
+    "username": "mail",
 }
 ``` 
   - Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (user is not logged in)
