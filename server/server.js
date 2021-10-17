@@ -108,7 +108,7 @@ app.get('/api/sessions/current', (req, res) => {
         res.status(401).json({ error: 'Unauthenticated user!' });;
 });
 
-
+//***   Calculate Estimation Time   */
 // http://localhost:3001/api/services/estimation?type=SPID
 app.get('/api/services/estimation', async (req, res) => {
     const type=req.query.type;
@@ -144,17 +144,18 @@ app.get('/api/services/estimation', async (req, res) => {
     res.json(TR);
 });
 
-
-// http://localhost:3001/api/services/counterCount?type=SPID
-app.get('/api/services/counterCount', async (req, res) => {
+//***   Update QUEUE   */
+// http://localhost:3001/api/services/updateQueue?type=SPID&operationType=1 
+//OperationType 1= increase 2= deacrease and 3= reset
+app.get('/api/services/updateQueue', async (req, res) => {
     const type=req.query.type;
-    const timeService = await OfficerDao.getCountCustomerByService(type);
+    console.log("22"+type+"  "+req.query.OperationType)
+    const timeService = await OfficerDao.updateQueue(type,req.query.OperationType);
     if (timeService.error)
         res.status(404).json(timeService);
     else
         tr = timeService;
     res.json(tr);
 });
-
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}/`));
