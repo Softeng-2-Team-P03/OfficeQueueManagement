@@ -64,11 +64,11 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.get('/api/counters',
-    async(req, res) => {
+    async (req, res) => {
         try {
             const result = await officerDao.listCounters();
             res.json(result);
-        } catch (err){
+        } catch (err) {
             res.status(503).end();
         }
     }
@@ -169,6 +169,56 @@ app.get('/api/counters/:counterId/nextTicket', [
     }
 );
 
+//***   Calculate Estimation Time   */
+// http://localhost:3001/api/services/estimation?type=SPID
+app.get('/api/services/estimation', async (req, res) => {
+    const type = req.query.type;
+    // tr= the service time for the request time 
+    var tr = 0;
+    // ki is the number of different types of requests served by counter i
+    var ki = 0;
+    // nr is the number of people in queue for request type r
+    var nr = 0;
+
+    const timeService = await officerDao.getTimeService(type);
+    if (timeService.error)
+        res.status(404).json(timeService);
+    else
+        tr = timeService;
+
+    const counter = await officerDao.getCounterCount(type);
+    if (counter.error)
+        res.status(404).json(counter);
+    else
+        ki = counter;
+
+    const queue = await officerDao.getQueueCounter(type);
+    if (queue.error)
+        res.status(404).json(queue);
+    else
+        nr = queue;
+    // Calc Sigma
+    var sigma = officerDao.mathSigmaSymbol(1, ki);
+    // Calculate Estimation Time
+    const TR = tr * (nr / sigma + (1 / 2))
+    console.log(TR)
+    res.json(TR);
+});
+
+//***   Update QUEUE   */
+// http://localhost:3001/api/services/updateQueue?type=SPID&operationType=1 
+//OperationType 1= increase 2= deacrease and 3= reset
+app.get('/api/services/updateQueue', async (req, res) => {
+    const type = req.query.type;
+    console.log("22" + type + "  " + req.query.OperationType)
+    const timeService = await officerDao.updateQueue(type, req.query.OperationType);
+    if (timeService.error)
+        res.status(404).json(timeService);
+    else
+        tr = timeService;
+    res.json(tr);
+});
+
 /*** Users APIs ***/
 
 // POST /sessions 
@@ -208,56 +258,6 @@ app.get('/api/sessions/current', (req, res) => {
     }
     else
         res.status(401).json({ error: 'Unauthenticated user!' });;
-});
-
-//***   Calculate Estimation Time   */
-// http://localhost:3001/api/services/estimation?type=SPID
-app.get('/api/services/estimation', async (req, res) => {
-    const type=req.query.type;
-    // tr= the service time for the request time 
-    var tr = 0;
-    // ki is the number of different types of requests served by counter i
-    var ki = 0;
-    // nr is the number of people in queue for request type r
-    var nr = 0;
-
-    const timeService = await OfficerDao.getTimeService(type);
-    if (timeService.error)
-        res.status(404).json(timeService);
-    else
-        tr = timeService;
-
-    const counter = await OfficerDao.getCounterCount(type);
-    if (counter.error)
-        res.status(404).json(counter);
-    else
-        ki = counter;
-
-    const queue = await OfficerDao.getQueueCounter(type);
-    if (queue.error)
-        res.status(404).json(queue);
-    else
-        nr = queue;
-// Calc Sigma
-    var sigma = OfficerDao.mathSigmaSymbol(1, ki);
-    // Calculate Estimation Time
-    const TR = tr * (nr / sigma + (1 / 2))
-    console.log(TR)
-    res.json(TR);
-});
-
-//***   Update QUEUE   */
-// http://localhost:3001/api/services/updateQueue?type=SPID&operationType=1 
-//OperationType 1= increase 2= deacrease and 3= reset
-app.get('/api/services/updateQueue', async (req, res) => {
-    const type=req.query.type;
-    console.log("22"+type+"  "+req.query.OperationType)
-    const timeService = await OfficerDao.updateQueue(type,req.query.OperationType);
-    if (timeService.error)
-        res.status(404).json(timeService);
-    else
-        tr = timeService;
-    res.json(tr);
 });
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}/`));
