@@ -1,1 +1,12 @@
 ### here we can test server requests with REST Client extension for VSCode
+
+###
+GET http://localhost:3001/api/counters/1/nextTicket
+
+###
+
+GET http://localhost:3001/api/counters/2/currentTicket
+
+###
+
+GET http://localhost:3001/api/counters

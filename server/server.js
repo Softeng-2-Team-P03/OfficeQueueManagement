@@ -6,6 +6,7 @@ const LocalStrategy = require('passport-local').Strategy; // username and passwo
 const session = require('express-session'); // enable sessions
 const userDao = require('./user-dao.js'); // module for accessing the users in the DB
 const dao = require('./dao'); // module for accessing the DB
+const officerDao = require('./officer-dao.js');
 
 /*** Set up Passport ***/
 // set up the "username and password" login strategy
@@ -63,6 +64,111 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get('/api/counters',
+    async(req, res) => {
+        try {
+            const result = await officerDao.listCounters();
+            res.json(result);
+        } catch (err){
+            res.status(503).end();
+        }
+    }
+)
+
+app.get('/api/counters/:counterId/currentTicket', [
+    check('counterId').isInt()
+],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ error: "counterId is not an int" });
+        }
+
+        try {
+            const result = await officerDao.getCurrentTicket(req.params.counterId);
+            if (result.error) {
+                return res.status(404).json(result); //Ticket being served not found
+            }
+            if (result == 0) {
+                return res.json({ ticketNumber: null, info: 'No ticket being served.' })
+            }
+            else {
+                return res.json({ ticketNumber: result })
+            }
+        } catch (err) {
+            res.status(503).end();
+        }
+    }
+);
+
+//TO ADD: isLoggedIn (after testing a bit)
+app.get('/api/counters/:counterId/nextTicket', [
+    check('counterId').isInt()
+],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ error: "counterId is not an int" });
+        }
+
+        try {
+            const result = await officerDao.listServicesByCounter(req.params.counterId);
+
+            if (result.error) {
+                return res.status(404).json(result); //Counter with that id has no services
+            }
+
+            const servicesName = result; //array of services names
+            let servicesInfo = [];
+            for (const service of servicesName) {
+
+                const result = await officerDao.getServiceInfo(service); //get serviceInfo (queue and serviceTime)
+                if (result.error) {
+                    return res.status(404).json(result); //If service with that name was not found in the DB
+                }
+                servicesInfo = [...servicesInfo, result];
+            }
+
+            servicesInfo.sort((a, b) => b.service_queue - a.service_queue || a.service_time - b.service_time);
+            //Service queue order is DESC and service time order is ASC
+
+            const service = servicesInfo[0];
+
+            if (service.service_queue == 0) {
+                const result = await officerDao.updateTicketServed(req.params.counterId, null); //Counter is serving no ticket
+
+                if (result.error) {
+                    return res.status(404).json(result); //Counter with that id not found
+                }
+
+                res.json({ ticketNumber: null, info: "No ticket to serve." }); //no ticket to serve
+            }
+            else {
+                const ticketNum = await officerDao.selectTicketByService(service.service_type); //Get the MIN ticket of that Service
+
+                if (ticketNum.error) {
+                    return res.status(404).json(ticketNum); //Ticket with that service not found
+                }
+
+                const result = await officerDao.updateTicketServed(req.params.counterId, ticketNum); //Counter is serving the new ticket
+
+                if (result.error) {
+                    return res.status(404).json(result); //Counter with that id not found
+                }
+
+                await officerDao.deleteTicket(ticketNum); //Remove ticket from DB
+                //No error check: ticket was found before, it should still be in the DB
+
+                await officerDao.decreaseQueue(service.service_type); //Decrease service queue
+                //No error check: service was found before, it should still be in the DB
+
+                res.json({ ticketNumber: ticketNum }); //ticket removed and currently served by that counter
+            }
+        } catch (err) {
+            res.status(503).end();
+        }
+    }
+);
 
 /*** Users APIs ***/
 
