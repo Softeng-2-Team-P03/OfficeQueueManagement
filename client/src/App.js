@@ -8,29 +8,33 @@ import {
 } from "react-router-dom";
 import Counter from "./Counter";
 import Manager from "./Manager";
+import ChooseCounter from "./ChooseCounter";
 import API from './API';
 import Officer from "./Officer";
 
 
 function App() {
 
-  return (
-      <Router>
-          <div>
-              <Switch>
-                  <Route path="/officer">
-                      <Officer/>
-                  </Route>
-                  <Route path="/counter">
-                      <Counter />
-                  </Route>
-                  <Route path="/">
-                      <Manager/>
-                  </Route>
-              </Switch>
-          </div>
-      </Router>
-  );
+    return (
+        <Router>
+            <div>
+                <Switch>
+                    <Route path="/officer">
+                        <Officer />
+                    </Route>
+                    <Route path="/counter">
+                        <Counter />
+                    </Route>
+                    <Route path="/choose">
+                        <ChooseCounter />
+                    </Route>
+                    <Route path="/">
+                        <Manager />
+                    </Route>
+                </Switch>
+            </div>
+        </Router>
+    );
 }
 
 export default App;

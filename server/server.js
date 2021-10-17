@@ -64,6 +64,17 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get('/api/counters',
+    async(req, res) => {
+        try {
+            const result = await officerDao.listCounters();
+            res.json(result);
+        } catch (err){
+            res.status(503).end();
+        }
+    }
+)
+
 app.get('/api/counters/:counterId/currentTicket', [
     check('counterId').isInt()
 ],

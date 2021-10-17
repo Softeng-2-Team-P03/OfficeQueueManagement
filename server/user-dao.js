@@ -14,7 +14,7 @@ exports.getUserById = (id) => {
           resolve({error: 'Officer not found.'});
         else {
           // by default, the local strategy looks for "username": not to create confusion in server.js, we can create an object with that property
-          const user = {id: row.officer_id, username: row.email}
+          const user = {id: row.OFFICER_ID, username: row.email}
           resolve(user);
         }
     });
@@ -31,7 +31,7 @@ exports.getUser = (email, password) => {
           resolve(false);
         }
         else {
-          const user = {id: row.officer_id, username: row.email};
+          const user = {id: row.OFFICER_ID, username: row.email};
             
           // check the hashes with an async call, given that the operation may be CPU-intensive (and we don't want to block the server)
           bcrypt.compare(password, row.hash).then(result => {

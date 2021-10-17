@@ -1,6 +1,18 @@
 const dayjs = require('dayjs');
 const BASEURL = '/api';
 
+async function getCounters() {
+    //call: GET /api/counters
+    const response = await fetch(BASEURL + '/counters/');
+    const counters = await response.json();
+
+    if (response.ok) {
+        return counters;
+    } else {
+        throw counters; //object with error
+    }
+}
+
 async function getNextTicket(counterId) {
     //call: GET /api/counters/:counterId/nextTicket
     const response = await fetch(BASEURL + '/counters/' + counterId + '/nextTicket');
@@ -74,5 +86,5 @@ async function getUserInfo() {
 
 
 
-const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket };
+const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters };
 export default API;

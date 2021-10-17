@@ -2,6 +2,22 @@
 
 const db = require('./db');
 
+//Retrieve all counters
+exports.listCounters = () => {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT COUNTER_ID
+                     FROM COUNTER`
+        db.all(sql, (err, rows) => {
+            if(err){
+                reject(err);
+                return;
+            }
+            const counters = rows.map((counter) => counter.COUNTER_ID);
+            resolve(counters);
+        })
+    })
+}
+
 //Retrieve services by counter
 exports.listServicesByCounter = (counterId) => {
     return new Promise((resolve, reject) => {
