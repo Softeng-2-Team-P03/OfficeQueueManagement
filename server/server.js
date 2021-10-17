@@ -6,6 +6,7 @@ const LocalStrategy = require('passport-local').Strategy; // username and passwo
 const session = require('express-session'); // enable sessions
 const userDao = require('./user-dao.js'); // module for accessing the users in the DB
 const dao = require('./dao'); // module for accessing the DB
+const OfficerDao = require('./officer-dao.js'); // module for accessing the DB
 
 const dateRegex = new RegExp(/^([1-9]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])[\ ]([01][0-9]|2[0-3]):[0-5][0-9])$/);
 //RegExp to check if a date is like 'YYYY-MM-DD HH:mm'. It doesn't check if it's a valid date.
@@ -53,7 +54,6 @@ const isLoggedIn = (req, res, next) => {
 
     return res.status(401).json({ error: 'not authenticated' });
 }
-
 // set up the session
 app.use(session({
     // by default, Passport uses a MemoryStore to keep track of the sessions
@@ -106,6 +106,54 @@ app.get('/api/sessions/current', (req, res) => {
     }
     else
         res.status(401).json({ error: 'Unauthenticated user!' });;
+});
+
+
+// http://localhost:3001/api/services/estimation?type=SPID
+app.get('/api/services/estimation', async (req, res) => {
+    const type=req.query.type;
+    // tr= the service time for the request time 
+    var tr = 0;
+    // ki is the number of different types of requests served by counter i
+    var ki = 0;
+    // nr is the number of people in queue for request type r
+    var nr = 0;
+
+    const timeService = await OfficerDao.getTimeService(type);
+    if (timeService.error)
+        res.status(404).json(timeService);
+    else
+        tr = timeService;
+
+    const counter = await OfficerDao.getCounterCount(type);
+    if (counter.error)
+        res.status(404).json(counter);
+    else
+        ki = counter;
+
+    const queue = await OfficerDao.getQueueCounter(type);
+    if (queue.error)
+        res.status(404).json(queue);
+    else
+        nr = queue;
+// Calc Sigma
+    var sigma = OfficerDao.mathSigmaSymbol(1, ki);
+    // Calculate Estimation Time
+    const TR = tr * (nr / sigma + (1 / 2))
+    console.log(TR)
+    res.json(TR);
+});
+
+
+// http://localhost:3001/api/services/counterCount?type=SPID
+app.get('/api/services/counterCount', async (req, res) => {
+    const type=req.query.type;
+    const timeService = await OfficerDao.getCountCustomerByService(type);
+    if (timeService.error)
+        res.status(404).json(timeService);
+    else
+        tr = timeService;
+    res.json(tr);
 });
 
 
