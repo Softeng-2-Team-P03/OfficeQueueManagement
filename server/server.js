@@ -7,9 +7,6 @@ const session = require('express-session'); // enable sessions
 const userDao = require('./user-dao.js'); // module for accessing the users in the DB
 const dao = require('./dao'); // module for accessing the DB
 
-const dateRegex = new RegExp(/^([1-9]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])[\ ]([01][0-9]|2[0-3]):[0-5][0-9])$/);
-//RegExp to check if a date is like 'YYYY-MM-DD HH:mm'. It doesn't check if it's a valid date.
-
 /*** Set up Passport ***/
 // set up the "username and password" login strategy
 // by setting a function to verify username and password
