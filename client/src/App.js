@@ -10,10 +10,11 @@ import Counter from "./Counter";
 import Manager from "./Manager";
 import API from './API';
 import Officer from "./Officer";
+import Client from "./Client";
 
 
 function App() {
-
+ 
   return (
       <Router>
           <div>
@@ -23,6 +24,9 @@ function App() {
                   </Route>
                   <Route path="/counter">
                       <Counter />
+                  </Route>
+                  <Route path="/client">
+                      <Client  />
                   </Route>
                   <Route path="/">
                       <Manager/>
