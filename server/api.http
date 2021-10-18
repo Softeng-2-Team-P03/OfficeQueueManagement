@@ -10,3 +10,11 @@ GET http://localhost:3001/api/counters/2/currentTicket
 ###
 
 GET http://localhost:3001/api/counters
+
+
+###
+
+POST http://localhost:3001/api/tickets
+Content-Type: application/json
+
+{"serviceType": "SPID"}

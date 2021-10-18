@@ -246,8 +246,8 @@ exports.updateQueue = (type, operationType) => {
         return;
       }
       var nr = rows[0]["NO"] != null ? rows[0]["NO"] : 0;
-      console.log("nr" + nr)
-      console.log("operationType" + operationType)
+      console.log("nr" + nr);
+      console.log("operationType" + operationType);
       if (operationType == 1)
         nr++;
       else if (operationType == 2 && nr > 0)
@@ -277,7 +277,7 @@ exports.updateQueue = (type, operationType) => {
 exports.createTicket = (serviceName) => {
   return new Promise((resolve, reject) => {
     const sql = 'INSERT INTO TICKET(SERVICE_TYPE) VALUES(?)';
-    db.run(sql, serviceName, function (err) {
+    db.run(sql, [serviceName], function (err) {
       if (err) {
         console.error(err);
         reject({error: `Database error during the creation of the ticket`});

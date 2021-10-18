@@ -240,7 +240,7 @@ app.post('/api/tickets', [
     }
 
     try {
-        let type = req.params.serviceType;
+        let type = req.body.serviceType;
         
         //Adding the  ticket in the ticket table
         const ticketNum = await officerDao.createTicket(type);
@@ -250,13 +250,13 @@ app.post('/api/tickets', [
         }
 
          //increasing the queue by 1 for the specified service type
-        const result = await officerDao.updateQueue(type, 1);
+        const result = await officerDao.updateQueue(req.body.serviceType, "1");
 
         if (result.error) {
             return res.status(404).json(result); //Problem with the increase of the queue for the specified service type
         }
         //return the ticket number
-        res.status(503).json(ticketNum);
+        res.status(200).json(ticketNum);
 
     } catch (err) {
         res.status(503).json(error);
