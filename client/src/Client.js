@@ -9,6 +9,10 @@ function Client(props) {
     const [loading, setLoading] = useState(true);
     const [errorMessage, setErrorMessage] = useState('');
 
+    const [selected, setSelected] = useState('');
+    const [ticket, setTicket] = useState('No ticket issued yet');
+    const [time, setTime] = useState('No ticket issued yet');
+
     useEffect(() => {
         API.getServices()
             .then((services) => {
@@ -20,7 +24,23 @@ function Client(props) {
                 setErrorMessage('Error in retrieving the services');
                 console.error(err);
             })
-    }, [])
+    }, []);
+
+    const newTicket = (service) => {
+        setLoading(true);
+        API.getTicket(service)
+            .then((ticket) => {
+                setSelected(service);
+                setTicket(ticket.ticketNum);
+                setTime(ticket.ticketTime);
+                setErrorMessage('');
+                setLoading(false);
+            })
+            .catch(err => {
+                setErrorMessage('Error in issueing ticket');
+                console.error(err);
+            });
+    }
 
 
     return (
@@ -33,7 +53,7 @@ function Client(props) {
                         :
                         services.map((service) =>
                             <Row key={service} className="below-nav">
-                                <Button disabled={loading} variant="primary" >
+                                <Button disabled={loading} variant="primary" onClick={() => newTicket(service)} >
                                     {service}
                                 </Button>
                             </Row>
@@ -45,9 +65,9 @@ function Client(props) {
                     <Row className="below">
                         <Card style={{ width: '18rem' }}>
                             <ListGroup variant="flush">
-                                <ListGroup.Item>Servizio selezionato:</ListGroup.Item>
-                                <ListGroup.Item>Ticket number:</ListGroup.Item>
-                                <ListGroup.Item>estimated waiting time:</ListGroup.Item>
+                                <ListGroup.Item>Servizio selezionato: {selected}</ListGroup.Item>
+                                <ListGroup.Item>Ticket number: {ticket}</ListGroup.Item>
+                                <ListGroup.Item>estimated waiting time: {time}</ListGroup.Item>
                             </ListGroup>
                         </Card>
                     </Row>

@@ -25,7 +25,50 @@ async function getServices() {
     }
 }
 
+async function getTicket(service) {
+    //calls function newTicket and newTicketTime
+    return new Promise((resolve, reject) => {
+        newTicket(service)
+            .then((ticketNum) => {
+                newTicketTime(service)
+                    .then((ticketTime) => resolve({ ticketNum: ticketNum, ticketTime: ticketTime }))
+                    .catch((err) => reject(err));
+            }).catch((err) => reject(err));
+    })
+}
 
+async function newTicket(service) {
+    //call: POST /api/tickets
+    return new Promise((resolve, reject) => {
+        fetch(BASEURL + '/tickets', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ serviceType: service })
+        }).then(res => {
+            if (res.ok) {
+                resolve(res);
+            } else {
+                res.json()
+                    .then(message => reject(message)) // error in the response body
+                    .catch(() => reject({ error: "Cannot parse server response." })) // something else
+            }
+        }).catch(() => reject({ error: "Cannot communicate with the server." })); //connection errors
+    })
+}
+
+async function newTicketTime(service) {
+    //call: GET /api/estimation
+    const response = await fetch(BASEURL + '/estimation');
+    const time = await response.json();
+
+    if (response.ok) {
+        return time;
+    } else {
+        throw time; //object with error from the server
+    }
+}
 
 async function getNextTicket(counterId) {
     //call: GET /api/counters/:counterId/nextTicket
@@ -100,5 +143,5 @@ async function getUserInfo() {
 
 
 
-const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters, getServices };
+const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters, getServices, getTicket };
 export default API;
