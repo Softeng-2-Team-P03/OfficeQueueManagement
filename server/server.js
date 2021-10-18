@@ -1,6 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
-const { check, validationResult } = require('express-validator'); // validation middleware
+const { check, validationResult, query } = require('express-validator'); // validation middleware
 const passport = require('passport'); // auth middleware
 const LocalStrategy = require('passport-local').Strategy; // username and password for login
 const session = require('express-session'); // enable sessions
@@ -171,7 +171,14 @@ app.get('/api/counters/:counterId/nextTicket', [
 
 //***   Calculate Estimation Time   */
 // http://localhost:3001/api/services/estimation?type=SPID
-app.get('/api/services/estimation', async (req, res) => {
+app.get('/api/services/estimation' , [
+    query('type').isIn(['SPID', 'Deposit', 'Shipping', 'Withdrawal'])
+    
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ error: "service type not found" });
+    }
     const type = req.query.type;
     // tr= the service time for the request time 
     var tr = 0;
@@ -208,7 +215,14 @@ app.get('/api/services/estimation', async (req, res) => {
 //***   Update QUEUE   */
 // http://localhost:3001/api/services/updateQueue?type=SPID&operationType=1 
 //OperationType 1= increase 2= deacrease and 3= reset
-app.get('/api/services/updateQueue', async (req, res) => {
+app.get('/api/services/updateQueue', [
+    query('type').isIn(['SPID', 'Deposit', 'Shipping', 'Withdrawal']),   
+    query('operationType').isIn(['1', '2', '3']), 
+],  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ errors: errors.array()  });
+    }
     const type = req.query.type;
     console.log("22" + type + "  " + req.query.operationType)
     const timeService = await officerDao.updateQueue(type, req.query.operationType);
