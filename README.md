@@ -13,8 +13,8 @@
 ## React Client Application Routes [TO COMPLETE]
 
 - Route `/`:
-    - Where customers select their service probably
-- Route `/officer`
+    - here customers select the service type they need and see the resulting ticket whaile officers can log in through the login button.
+- Route `/officer` here officers can ask for the next ticket compatible with their service type to serve and reset their counter.
 - Route `manager`
 - Route `/login`
 - ...
