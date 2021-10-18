@@ -132,7 +132,7 @@ async function getUserInfo() {
     const response = await fetch(BASEURL + '/sessions/current');
     const userInfo = await response.json();
     if (response.ok) {
-        return userInfo.name;
+        return userInfo;
     } else {
         throw userInfo;  // an object with the error coming from the server
     }

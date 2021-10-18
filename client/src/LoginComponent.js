@@ -38,10 +38,7 @@ function LoginComponent(props) {
                 <Form.Group className="mb-3" controlId="formBasicPassword">
                     <Form.Label>Password</Form.Label>
                     <InputGroup hasValidation>
-                        <Form.Control required type="password" placeholder="Password" minLength="8" maxLength="20" onChange={ev => setPassword(ev.target.value)} />
-                        <Form.Control.Feedback type="invalid">
-                            Please enter a password between 8 and 20 characters.
-                        </Form.Control.Feedback>
+                        <Form.Control required type="password" placeholder="Password" onChange={ev => setPassword(ev.target.value)} />
                     </InputGroup>
                 </Form.Group>
                 <Form.Text className={"mb-3 "+props.message.type}>{props.message.msg}</Form.Text>
