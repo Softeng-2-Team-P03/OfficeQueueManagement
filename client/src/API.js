@@ -47,6 +47,60 @@ async function getCurrentTicket(counterId) {
     }
 }
 
+//QUEUE FUNCTIONS all call the same server function with different params.
+//serviceType: string name of the service type you want to affect the queue
+
+//increases queue of the specified service type by 1 (serviceType must be a string)
+async function increaseQueue(serviceType) {
+    const response = await fetch(BASEURL + '/services/updateQueue?type='+serviceType+'&operationType=1');
+    const typeQueue = await response.json();
+
+    if (response.ok) {
+        if (typeQueue.Queue == null) {
+            return 'invalid queue value ( null )'
+        }
+        else {
+            return `${typeQueue.Queue}`
+        }
+    } else {
+        throw typeQueue; //object with error from the server
+    }
+}
+
+//decreases queue of the specified service type by 1 (serviceType must be a string)
+async function decreaseQueue(serviceType) {
+    const response = await fetch(BASEURL + '/services/updateQueue?type='+serviceType+'&operationType=2');
+    const typeQueue = await response.json();
+
+    if (response.ok) {
+        if (typeQueue.Queue == null) {
+            return 'invalid queue value ( null )'
+        }
+        else {
+            return `${typeQueue.Queue}`
+        }
+    } else {
+        throw typeQueue; //object with error from the server
+    }
+}
+
+//resets to 0 the queue of the specified service type (serviceType must be a string)
+async function resetQueue(serviceType) {
+    const response = await fetch(BASEURL + '/services/updateQueue?type='+ serviceType +'&operationType=3');
+    const typeQueue = await response.json();
+
+    if (response.ok) {
+        if (typeQueue.Queue == null) {
+            return 'invalid queue value ( null )'
+        }
+        else {
+            return `${typeQueue.Queue}`
+        }
+    } else {
+        throw typeQueue; //object with error from the server
+    }
+}
+
 async function logIn(credentials) {
     let response = await fetch('/api/sessions', {
         method: 'POST',
@@ -86,5 +140,5 @@ async function getUserInfo() {
 
 
 
-const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters };
+const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters, increaseQueue, decreaseQueue, resetQueue };
 export default API;

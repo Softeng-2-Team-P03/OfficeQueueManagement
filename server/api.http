@@ -10,3 +10,19 @@ GET http://localhost:3001/api/counters/2/currentTicket
 ###
 
 GET http://localhost:3001/api/counters
+
+
+### Get estimated waiting time for a certain service type
+GET http://localhost:3001/api/services/estimation?type=SPID
+
+
+### Update queue for a certain service type EG: type=SPID
+##operationType 1= increase
+GET http://localhost:3001/api/services/updateQueue?type=SPID&operationType=1
+
+###operationType 2= deacrease
+GET http://localhost:3001/api/services/updateQueue?type=SPID&operationType=2
+
+###operationType 3= reset
+GET http://localhost:3001/api/services/updateQueue?type=SPID&operationType=3
+
