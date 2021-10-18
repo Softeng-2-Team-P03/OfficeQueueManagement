@@ -1,22 +1,26 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import { Row, Col, Form, Button, Card, ListGroup } from 'react-bootstrap';
-import { useState } from 'react';
-
-
-
+import { Row, Col, Button, Card, ListGroup, Spinner } from 'react-bootstrap';
+import { useEffect, useState } from 'react';
+import API from './API';
 
 function Client(props) {
-    const [selected, setSelected] = useState("");
 
-    const handleSubmit = (event) => {
+    const [services, setServices] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [errorMessage, setErrorMessage] = useState('');
 
-        event.preventDefault();
-
-        setSelected(true);
-
-
-
-    };
+    useEffect(() => {
+        API.getServices()
+            .then((services) => {
+                setServices(services);
+                setLoading(false);
+                setErrorMessage('');
+            })
+            .catch(err => {
+                setErrorMessage('Error in retrieving the services');
+                console.error(err);
+            })
+    }, [])
 
 
     return (
@@ -25,18 +29,19 @@ function Client(props) {
                 <Col xs="3"></Col>
                 <Col xs="6">
                     <h1>Select the service you are looking for</h1>
-                    <Form onSubmit={handleSubmit}>
-
-                        {
-                            props.serviceList.map((service) =>
-                                <Row key={service} className="below-nav">
-                                    <Button type="submit" className={selected ? "disabled" : ""} variant="primary" >
-                                        {service}
-                                    </Button>
-                                </Row>
-                            )
-                        }
-                    </Form>
+                    {loading ? <h3>Loading services <Spinner animation="border" /> </h3>
+                        :
+                        services.map((service) =>
+                            <Row key={service} className="below-nav">
+                                <Button disabled={loading} variant="primary" >
+                                    {service}
+                                </Button>
+                            </Row>
+                        )
+                    }
+                    <Row>
+                        <h4 style={{ color: 'red', fontWeight: 'bold' }}>{errorMessage}</h4>
+                    </Row>
                     <Row className="below">
                         <Card style={{ width: '18rem' }}>
                             <ListGroup variant="flush">

@@ -15,17 +15,6 @@ import Client from "./Client";
 
 
 function App() {
-    const [serviceList, setServiceList] = useState([]);
-
-    /* Function to get all offered services */
-    useEffect(() => {
-        API.getServices()
-            .then((services) => {
-                setServiceList(services);
-            })
-            .catch(err => { throw err });
-        
-    }, [])
 
     return (
         <Router>
@@ -38,7 +27,7 @@ function App() {
                         <Counter />
                     </Route>
                     <Route path="/client">
-                        <Client serviceList={serviceList}/>
+                        <Client/>
                     </Route>
                     <Route path="/">
                         <Manager />

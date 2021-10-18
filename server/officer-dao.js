@@ -17,6 +17,21 @@ exports.listCounters = () => {
   })
 }
 
+//Retrieve all services
+exports.listServices = () => {
+  return new Promise((resolve, reject) => {
+    const sql = `select SERVICE_TYPE from SERVICE`
+    db.all(sql, (err, rows) => {
+      if (err) {
+        reject(err);
+        return;
+      }
+      const services = rows.map((service) => service.SERVICE_TYPE);
+      resolve(services);
+    })
+  })
+}
+
 //Retrieve services by counter
 exports.listServicesByCounter = (counterId) => {
   return new Promise((resolve, reject) => {
