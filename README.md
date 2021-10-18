@@ -10,17 +10,32 @@
 - ### 289587 Banouie Alireza
 - ### 292457 De Florio Giovanni
 
-## React Client Application Routes [TO COMPLETE]
+## React Client Application Routes
 
 - Route `/`:
-    - here customers select the service type they need and see the resulting ticket whaile officers can log in through the login button.
-- Route `/officer` here officers can ask for the next ticket compatible with their service type to serve and reset their counter.
-- Route `/manager` here the manager is able to see various statistics
-- Route `/login` a form to be able to log in as officer or manager
--Route `/choose` after an officer logs in reaches this view where he can choose which counter he wants to control.
-- ...
+    - Customers select the service type they need and see the resulting ticket while Officers can log in through the login button
+    - If Officer is logged in they can't select a ticket and get redirected to `/choose`
+- Route `/officer` 
+    - Officers can ask through a counter for the next ticket compatible with their service type to serve
+- Route `/manager` [TO IMPLEMENT]
+    - Manager is able to see various statistics
+- Route `/login` 
+    - Form to be able to log in as officer or manager
+- Route `/choose` 
+    - After an Officer logs in they reach this view where they can choose which counter they want to work on
 
 ## API SERVER [TO COMPLETE]
+
+### Retrieve counters and their services
+- HTTP Method: `GET` URL `/api/counters`
+- Description: Retrieve the counters and the list of their services
+- Request body: _None_
+- Response: `200 OK` (success)
+- Response body:
+```
+    [{"counterId": counterId, "services": [Service1, Service2, ...], ...}
+```
+- Error Response: `404 Not Found` (counterId services' cannot be found), `503 Service Unavailable`
 
 ### Retrieve ticket served by counterId
 - HTTP Method: `GET` URL `/api/counters/:counterId/currentTicket`
@@ -40,7 +55,7 @@
 - Error Response: `422 Unprocessable Entity` (value does not satisfy validators), `503 Service Unavailable`, `404 Not Found` (ticket associated with counterId not found in DB)
 
 ### Retrieve next ticket to serve by counterId
-- HTTP Method: `GET` URL `/api/counters/:counterId/currentTicket`
+- HTTP Method: `GET` URL `/api/counters/:counterId/nextTicket`
 - Description: Retrieve the currently served ticket number by a counter given `counterId`.
 - Request body: _None_
 - Response: `200 OK` (success)
@@ -99,7 +114,7 @@ opnum 3 = reset the queue of the specified service type to zero.
 - Request body: credentials of the user who is trying to log in
 ```
 { 
-    "username": "username",
+    "username": "email",
     "password": "password"
 }
 ``` 
@@ -108,7 +123,7 @@ opnum 3 = reset the queue of the specified service type to zero.
 ```
 { 
     "id": id,
-    "username": "mail",
+    "username": "email",
 }
 ``` 
 - Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (login failed)
@@ -122,7 +137,7 @@ opnum 3 = reset the queue of the specified service type to zero.
 ```
 { 
     "id": id,
-    "username": "mail",
+    "username": "email",
 }
 ``` 
   - Error responses: `500 Internal Server Error` (generic error), `401 Unauthorized User` (user is not logged in)
@@ -146,8 +161,9 @@ opnum 3 = reset the queue of the specified service type to zero.
 - Table `SERVICE` - contains **PK** SERVICE_TYPE `(string)`, service_time `(int)`, queue_counter `(int)`
     - Table to store services, their average service time and queue of customers for that service
 - Table `TICKET` - contains **PK** TICKET_NUM `(int)`, service_type `(string)`
+    - Table to store the daily list of tickets. A lower ticket number means a ticket issued earlier
 
-## Users Credentials [I DO NOT KNOW THE PASSWORDS]
+## Users Credentials
 
 - giovanni.nannino@gmail.com , password: `giovanni`
 - petalo.rosa@gmail.com , password: `petalo`
