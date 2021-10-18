@@ -115,6 +115,6 @@
 
 ## Users Credentials [I DO NOT KNOW THE PASSWORDS]
 
-- giovanni.nannino@gmail.com , [...]
-- petalo.rosa@gmail.com , [...] 
-- simone.gatto@gmail.com , [...] 
+- giovanni.nannino@gmail.com , password: `giovanni`
+- petalo.rosa@gmail.com , password: `petalo`
+- simone.gatto@gmail.com , password: `simone` 

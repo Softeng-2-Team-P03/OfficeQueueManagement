@@ -15,27 +15,27 @@ import Client from "./Client";
 
 
 function App() {
- 
-  return (
-      <Router>
-          <div>
-              <Switch>
-                  <Route path="/officer">
-                      <Officer/>
-                  </Route>
-                  <Route path="/counter">
-                      <Counter />
-                  </Route>
-                  <Route path="/client">
-                      <Client  />
-                  </Route>
-                  <Route path="/">
-                      <Manager/>
-                  </Route>
-              </Switch>
-          </div>
-      </Router>
-  );
+
+    return (
+        <Router>
+            <div>
+                <Switch>
+                    <Route path="/officer">
+                        <Officer />
+                    </Route>
+                    <Route path="/counter">
+                        <Counter />
+                    </Route>
+                    <Route path="/manager">
+                        <Manager />
+                    </Route>
+                    <Route path="/">
+                        <Client />
+                    </Route>
+                </Switch>
+            </div>
+        </Router>
+    );
 }
 
 export default App;
