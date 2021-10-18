@@ -31,9 +31,9 @@
 - Description: Retrieve the counters and the list of their services
 - Request body: _None_
 - Response: `200 OK` (success)
-- Response body:
+- Response body: An array of objects, each one containing information on a counter
 ```
-    [{"counterId": counterId, "services": [Service1, Service2, ...], ...}
+    [{"counterId": counterId, "services": ["Service1", "Service2", ...], ...}
 ```
 - Error Response: `404 Not Found` (counterId services' cannot be found), `503 Service Unavailable`
 
