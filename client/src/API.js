@@ -48,7 +48,7 @@ async function newTicket(service) {
             body: JSON.stringify({ serviceType: service })
         }).then(res => {
             if (res.ok) {
-                resolve(res);
+                resolve(res.json());
             } else {
                 res.json()
                     .then(message => reject(message)) // error in the response body

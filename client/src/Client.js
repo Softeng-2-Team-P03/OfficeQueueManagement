@@ -30,6 +30,7 @@ function Client(props) {
         setLoading(true);
         API.getTicket(service)
             .then((ticket) => {
+                console.log(ticket);
                 setSelected(service);
                 setTicket(ticket.ticketNum);
                 setTime(ticket.ticketTime);
@@ -67,7 +68,7 @@ function Client(props) {
                             <ListGroup variant="flush">
                                 <ListGroup.Item>Servizio selezionato: {selected}</ListGroup.Item>
                                 <ListGroup.Item>Ticket number: {ticket}</ListGroup.Item>
-                                <ListGroup.Item>estimated waiting time: {time}</ListGroup.Item>
+                                <ListGroup.Item>Estimated waiting time: {time}</ListGroup.Item>
                             </ListGroup>
                         </Card>
                     </Row>
