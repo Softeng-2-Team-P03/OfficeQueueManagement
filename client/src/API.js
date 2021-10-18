@@ -1,4 +1,3 @@
-const dayjs = require('dayjs');
 const BASEURL = '/api';
 
 async function getCounters() {
@@ -10,6 +9,63 @@ async function getCounters() {
         return counters; //array with format [{counterId: counterId, services: [service1, service2, ...]}, ...]
     } else {
         throw counters; //object with error
+    }
+}
+
+async function getServices() {
+    //call: GET /api/services
+    const response = await fetch(BASEURL + '/services/');
+    const services = await response.json();
+
+    if (response.ok) {
+        return services;
+    } else {
+        throw services; //object with error
+    }
+}
+
+async function getTicket(service) {
+    //calls function newTicket and newTicketTime
+    return new Promise((resolve, reject) => {
+        newTicket(service)
+            .then((ticketNum) => {
+                newTicketTime(service)
+                    .then((ticketTime) => resolve({ ticketNum: ticketNum, ticketTime: ticketTime }))
+                    .catch((err) => reject(err));
+            }).catch((err) => reject(err));
+    })
+}
+
+async function newTicket(service) {
+    //call: POST /api/tickets
+    return new Promise((resolve, reject) => {
+        fetch(BASEURL + '/tickets', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ serviceType: service })
+        }).then(res => {
+            if (res.ok) {
+                resolve(res.json());
+            } else {
+                res.json()
+                    .then(message => reject(message)) // error in the response body
+                    .catch(() => reject({ error: "Cannot parse server response." })) // something else
+            }
+        }).catch(() => reject({ error: "Cannot communicate with the server." })); //connection errors
+    })
+}
+
+async function newTicketTime(service) {
+    //call: GET /api/estimation
+    const response = await fetch(BASEURL + '/services/estimation?type=' + service);
+    const time = await response.json();
+
+    if (response.ok) {
+        return time;
+    } else {
+        throw time; //object with error from the server
     }
 }
 
@@ -152,5 +208,5 @@ async function getUserInfo() {
 
 
 
-const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters, increaseQueue, decreaseQueue, resetQueue, getEstimatedTime };
+const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters, increaseQueue, decreaseQueue, resetQueue, getEstimatedTime, getServices, getTicket };
 export default API;
