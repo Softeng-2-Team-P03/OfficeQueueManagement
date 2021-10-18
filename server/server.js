@@ -231,7 +231,7 @@ app.get('/api/services/updateQueue', async (req, res) => {
     res.json(tr);
 });
 
-app.post('/api/tickets', isLoggedIn, [
+app.post('/api/tickets', [
     check('serviceType').not().isEmpty()
 ], async (req, res) => {
     const errors = validationResult(req);
