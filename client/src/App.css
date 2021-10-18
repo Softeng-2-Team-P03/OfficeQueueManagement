@@ -40,6 +40,10 @@
   padding-left: 30px;
 }
 
+.below {
+  padding-top: 1rem;
+}
+
 .modal-header {
   background-color: #28a745;
   color: white;

@@ -6,9 +6,7 @@ const LocalStrategy = require('passport-local').Strategy; // username and passwo
 const session = require('express-session'); // enable sessions
 const userDao = require('./user-dao.js'); // module for accessing the users in the DB
 const dao = require('./dao'); // module for accessing the DB
-
-const dateRegex = new RegExp(/^([1-9]\d{3}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])[\ ]([01][0-9]|2[0-3]):[0-5][0-9])$/);
-//RegExp to check if a date is like 'YYYY-MM-DD HH:mm'. It doesn't check if it's a valid date.
+const officerDao = require('./officer-dao.js');
 
 /*** Set up Passport ***/
 // set up the "username and password" login strategy
@@ -53,7 +51,6 @@ const isLoggedIn = (req, res, next) => {
 
     return res.status(401).json({ error: 'not authenticated' });
 }
-
 // set up the session
 app.use(session({
     // by default, Passport uses a MemoryStore to keep track of the sessions
@@ -66,6 +63,161 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+app.get('/api/counters',
+    async (req, res) => {
+        try {
+            const result = await officerDao.listCounters();
+            res.json(result);
+        } catch (err) {
+            res.status(503).end();
+        }
+    }
+)
+
+app.get('/api/counters/:counterId/currentTicket', [
+    check('counterId').isInt()
+],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ error: "counterId is not an int" });
+        }
+
+        try {
+            const result = await officerDao.getCurrentTicket(req.params.counterId);
+            if (result.error) {
+                return res.status(404).json(result); //Ticket being served not found
+            }
+            if (result == 0) {
+                return res.json({ ticketNumber: null, info: 'No ticket being served.' })
+            }
+            else {
+                return res.json({ ticketNumber: result })
+            }
+        } catch (err) {
+            res.status(503).end();
+        }
+    }
+);
+
+//TO ADD: isLoggedIn (after testing a bit)
+app.get('/api/counters/:counterId/nextTicket', [
+    check('counterId').isInt()
+],
+    async (req, res) => {
+        const errors = validationResult(req);
+        if (!errors.isEmpty()) {
+            return res.status(422).json({ error: "counterId is not an int" });
+        }
+
+        try {
+            const result = await officerDao.listServicesByCounter(req.params.counterId);
+
+            if (result.error) {
+                return res.status(404).json(result); //Counter with that id has no services
+            }
+
+            const servicesName = result; //array of services names
+            let servicesInfo = [];
+            for (const service of servicesName) {
+
+                const result = await officerDao.getServiceInfo(service); //get serviceInfo (queue and serviceTime)
+                if (result.error) {
+                    return res.status(404).json(result); //If service with that name was not found in the DB
+                }
+                servicesInfo = [...servicesInfo, result];
+            }
+
+            servicesInfo.sort((a, b) => b.service_queue - a.service_queue || a.service_time - b.service_time);
+            //Service queue order is DESC and service time order is ASC
+
+            const service = servicesInfo[0];
+
+            if (service.service_queue == 0) {
+                const result = await officerDao.updateTicketServed(req.params.counterId, null); //Counter is serving no ticket
+
+                if (result.error) {
+                    return res.status(404).json(result); //Counter with that id not found
+                }
+
+                res.json({ ticketNumber: null, info: "No ticket to serve." }); //no ticket to serve
+            }
+            else {
+                const ticketNum = await officerDao.selectTicketByService(service.service_type); //Get the MIN ticket of that Service
+
+                if (ticketNum.error) {
+                    return res.status(404).json(ticketNum); //Ticket with that service not found
+                }
+
+                const result = await officerDao.updateTicketServed(req.params.counterId, ticketNum); //Counter is serving the new ticket
+
+                if (result.error) {
+                    return res.status(404).json(result); //Counter with that id not found
+                }
+
+                await officerDao.deleteTicket(ticketNum); //Remove ticket from DB
+                //No error check: ticket was found before, it should still be in the DB
+
+                await officerDao.decreaseQueue(service.service_type); //Decrease service queue
+                //No error check: service was found before, it should still be in the DB
+
+                res.json({ ticketNumber: ticketNum }); //ticket removed and currently served by that counter
+            }
+        } catch (err) {
+            res.status(503).end();
+        }
+    }
+);
+
+//***   Calculate Estimation Time   */
+// http://localhost:3001/api/services/estimation?type=SPID
+app.get('/api/services/estimation', async (req, res) => {
+    const type = req.query.type;
+    // tr= the service time for the request time 
+    var tr = 0;
+    // ki is the number of different types of requests served by counter i
+    var ki = 0;
+    // nr is the number of people in queue for request type r
+    var nr = 0;
+
+    const timeService = await officerDao.getTimeService(type);
+    if (timeService.error)
+        res.status(404).json(timeService);
+    else
+        tr = timeService;
+
+    const counter = await officerDao.getCounterCount(type);
+    if (counter.error)
+        res.status(404).json(counter);
+    else
+        ki = counter;
+
+    const queue = await officerDao.getQueueCounter(type);
+    if (queue.error)
+        res.status(404).json(queue);
+    else
+        nr = queue;
+    // Calc Sigma
+    var sigma = officerDao.mathSigmaSymbol(1, ki);
+    // Calculate Estimation Time
+    const TR = tr * (nr / sigma + (1 / 2))
+    console.log(TR)
+    res.json(TR);
+});
+
+//***   Update QUEUE   */
+// http://localhost:3001/api/services/updateQueue?type=SPID&operationType=1 
+//OperationType 1= increase 2= deacrease and 3= reset
+app.get('/api/services/updateQueue', async (req, res) => {
+    const type = req.query.type;
+    console.log("22" + type + "  " + req.query.OperationType)
+    const timeService = await officerDao.updateQueue(type, req.query.OperationType);
+    if (timeService.error)
+        res.status(404).json(timeService);
+    else
+        tr = timeService;
+    res.json(tr);
+});
 
 /*** Users APIs ***/
 
@@ -107,6 +259,5 @@ app.get('/api/sessions/current', (req, res) => {
     else
         res.status(401).json({ error: 'Unauthenticated user!' });;
 });
-
 
 app.listen(PORT, () => console.log(`Server running on http://localhost:${PORT}/`));

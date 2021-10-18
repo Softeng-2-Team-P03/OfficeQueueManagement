@@ -1,6 +1,52 @@
 const dayjs = require('dayjs');
 const BASEURL = '/api';
 
+async function getCounters() {
+    //call: GET /api/counters
+    const response = await fetch(BASEURL + '/counters/');
+    const counters = await response.json();
+
+    if (response.ok) {
+        return counters;
+    } else {
+        throw counters; //object with error
+    }
+}
+
+async function getNextTicket(counterId) {
+    //call: GET /api/counters/:counterId/nextTicket
+    const response = await fetch(BASEURL + '/counters/' + counterId + '/nextTicket');
+    const ticket = await response.json();
+
+    if (response.ok) {
+        if (ticket.ticketNumber == null) {
+            return 'No ticket to serve'
+        }
+        else {
+            return `#${ticket.ticketNumber}`
+        }
+    } else {
+        throw ticket; //object with error from the server
+    }
+}
+
+async function getCurrentTicket(counterId) {
+    //call: GET /api/counters/:counterId/currentTicket
+    const response = await fetch(BASEURL + '/counters/' + counterId + '/currentTicket');
+    const ticket = await response.json();
+
+    if (response.ok) {
+        if (ticket.ticketNumber == null) {
+            return 'No ticket being served'
+        }
+        else {
+            return `#${ticket.ticketNumber}`
+        }
+    } else {
+        throw ticket; //object with error from the server
+    }
+}
+
 async function logIn(credentials) {
     let response = await fetch('/api/sessions', {
         method: 'POST',
@@ -40,5 +86,5 @@ async function getUserInfo() {
 
 
 
-const API = {logIn, logOut, getUserInfo };
+const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters };
 export default API;
