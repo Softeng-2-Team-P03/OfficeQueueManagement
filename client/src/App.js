@@ -60,25 +60,22 @@ function App() {
     return (
         <Router>
             <div>
-            <AppNavbar loggedIn={loggedIn} userLogoutCallback={userLogoutCallback} />
+                <AppNavbar loggedIn={loggedIn} userLogoutCallback={userLogoutCallback} />
                 <Switch>
-                <Route exact path="/login" render={() => (<>{loggedIn ? <Redirect to='/choose' /> :
-                    <LoginComponent userLoginCallback={userLoginCallback} message={message} />}</>)} />
-                    <Route path="/officer">
-                        <Officer />
-                    </Route>
+                    <Route exact path="/login" render={() => (<>{loggedIn ? <Redirect to='/choose' /> :
+                        <LoginComponent userLoginCallback={userLoginCallback} message={message} />}</>)} />
+                    <Route path="/officer" render={() => (<>{!loggedIn ? <Redirect to='/' /> :
+                        <Officer />}</>)} />
                     <Route path="/counter">
                         <Counter />
                     </Route>
                     <Route path="/manager">
                         <Manager />
                     </Route>
-                    <Route path="/choose">
-                        <ChooseCounter />
-                    </Route>
-                    <Route path="/">
-                        <Client />
-                    </Route>
+                    <Route path="/choose" render={() => (<>{!loggedIn ? <Redirect to='/' /> :
+                        <ChooseCounter />}</>)} />
+                    <Route path="/" render={() => (<>{loggedIn ? <Redirect to='/choose' /> :
+                        <Client />}</>)} />
                 </Switch>
             </div>
         </Router>

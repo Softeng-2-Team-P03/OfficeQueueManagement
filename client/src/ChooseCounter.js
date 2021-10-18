@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import { Col, Container, ListGroup, Row, Spinner } from "react-bootstrap";
+import { Col, Container, ListGroup, Row, Spinner, Badge } from "react-bootstrap";
 import { Link } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import API from './API';
@@ -38,8 +38,13 @@ function ChooseCounter(props) {
                     :
                     <ListGroup>
                         {counters.map(counter =>
-                            <Link to={{ pathname: '/officer', state: { counterId: counter } }}>
-                                <ListGroup.Item action> Counter #{counter}</ListGroup.Item>
+                            <Link to={{ pathname: '/officer', state: { counterId: counter.counterId, services: counter.services } }}>
+                                <>
+                                <ListGroup.Item action>Counter #{counter.counterId} 💻
+                                {counter.services.map(service =>  
+                                <><Badge style={{ backgroundColor: '#007bff', color: 'white' }}>{service}</Badge>&nbsp;</>)}
+                                </ListGroup.Item>
+                                </>
                             </Link>)}
                     </ListGroup>
                 }

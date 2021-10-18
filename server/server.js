@@ -66,7 +66,17 @@ app.use(passport.session());
 app.get('/api/counters',
     async (req, res) => {
         try {
-            const result = await officerDao.listCounters();
+            const counters = await officerDao.listCounters();
+            let result = [];
+            for(const counterId of counters){
+                const services = await officerDao.listServicesByCounter(counterId);
+                
+                if (services.error) {
+                    return res.status(404).json(result); //Counter with that id has no services
+                }
+                
+                result = [...result, {counterId: counterId, services: services}];
+            }
             res.json(result);
         } catch (err) {
             res.status(503).end();

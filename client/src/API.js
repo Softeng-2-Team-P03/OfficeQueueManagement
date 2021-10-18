@@ -7,7 +7,7 @@ async function getCounters() {
     const counters = await response.json();
 
     if (response.ok) {
-        return counters;
+        return counters; //array with format [{counterId: counterId, services: [service1, service2, ...]}, ...]
     } else {
         throw counters; //object with error
     }

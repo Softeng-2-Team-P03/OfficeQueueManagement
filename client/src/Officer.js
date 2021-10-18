@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.css';
-import { Button, Col, Container, ListGroup, Row, Spinner } from "react-bootstrap";
+import { Button, Col, Container, ListGroup, Row, Spinner, Badge } from "react-bootstrap";
 import { Link, Redirect, useLocation } from 'react-router-dom';
 import { useEffect, useState } from 'react';
 import API from './API';
@@ -46,11 +46,19 @@ function Officer() {
         <>
             {!location.state && <Redirect to='/choose' />}
             <Container>
+                <br />
                 <Row>
                     <Col xm={{ order: 'last' }}></Col>
-                    <h1><b>Counter #{location.state && location.state.counterId}</b></h1>
+                    <h1><b>Counter #{location.state && location.state.counterId} 💻</b></h1>
                     <Col xm={{ order: 'first' }}></Col>
                 </Row>
+                <Row>
+                    <Col xm={{ order: 'last' }}></Col>
+                    {location.state && location.state.services.map(service =>
+                        <><Badge style={{ backgroundColor: '#007bff', color: 'white' }}>{service}</Badge>&nbsp;</>)}
+                    <Col xm={{ order: 'first' }}></Col>
+                </Row>
+                <br />
                 <Row >
                     <Col xm={{ order: 'last' }}></Col>
                     <ListGroup as="ul">
@@ -64,6 +72,7 @@ function Officer() {
                     </ListGroup>
                     <Col xm={{ order: 'first' }}></Col>
                 </Row>
+                <br />
                 <Row>
                     <Col xm={{ order: 'last' }}></Col>
                     <h4 style={{ color: 'red', fontWeight: 'bold' }}>{errorMessage}</h4>
