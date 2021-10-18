@@ -101,6 +101,18 @@ async function resetQueue(serviceType) {
     }
 }
 
+
+async function getEstimatedTime(serviceType) {
+    // call: GET /api/services/estimation?type=
+    const response = await fetch((BASEURL + '/services/estimation?type=' + serviceType));
+    const estimatedTimeJson = await response.json();
+    if (response.ok) {
+      return estimatedTimeJson;
+    } else {
+      throw estimatedTimeJson;  // an object with the error coming from the server
+    }
+  }
+
 async function logIn(credentials) {
     let response = await fetch('/api/sessions', {
         method: 'POST',
@@ -140,5 +152,5 @@ async function getUserInfo() {
 
 
 
-const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters, increaseQueue, decreaseQueue, resetQueue };
+const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters, increaseQueue, decreaseQueue, resetQueue, getEstimatedTime };
 export default API;
