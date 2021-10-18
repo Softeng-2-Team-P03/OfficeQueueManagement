@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import Counter from "./Counter";
 import Manager from "./Manager";
+import ChooseCounter from "./ChooseCounter";
 import API from './API';
 import Officer from "./Officer";
 import Client from "./Client";
