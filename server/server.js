@@ -210,8 +210,8 @@ app.get('/api/services/estimation', async (req, res) => {
 //OperationType 1= increase 2= deacrease and 3= reset
 app.get('/api/services/updateQueue', async (req, res) => {
     const type = req.query.type;
-    console.log("22" + type + "  " + req.query.OperationType)
-    const timeService = await officerDao.updateQueue(type, req.query.OperationType);
+    console.log("22" + type + "  " + req.query.operationType)
+    const timeService = await officerDao.updateQueue(type, req.query.operationType);
     if (timeService.error)
         res.status(404).json(timeService);
     else
