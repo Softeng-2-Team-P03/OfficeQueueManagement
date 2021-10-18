@@ -4,9 +4,9 @@ import { useState } from 'react';
 
 
 
-function Client() {
+
+function Client(props) {
     const [selected, setSelected] = useState("");
-    let services = ["Shipping", "Withdrawal", "Deposit", "SPID"];
 
     const handleSubmit = (event) => {
 
@@ -28,7 +28,7 @@ function Client() {
                     <Form onSubmit={handleSubmit}>
 
                         {
-                            services.map((service) =>
+                            props.serviceList.map((service) =>
                                 <Row key={service} className="below-nav">
                                     <Button type="submit" className={selected ? "disabled" : ""} variant="primary" >
                                         {service}

@@ -13,6 +13,20 @@ async function getCounters() {
     }
 }
 
+async function getServices() {
+    //call: GET /api/services
+    const response = await fetch(BASEURL + '/services/');
+    const services = await response.json();
+
+    if (response.ok) {
+        return services;
+    } else {
+        throw services; //object with error
+    }
+}
+
+
+
 async function getNextTicket(counterId) {
     //call: GET /api/counters/:counterId/nextTicket
     const response = await fetch(BASEURL + '/counters/' + counterId + '/nextTicket');
@@ -86,5 +100,5 @@ async function getUserInfo() {
 
 
 
-const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters };
+const API = { logIn, logOut, getUserInfo, getNextTicket, getCurrentTicket, getCounters, getServices };
 export default API;

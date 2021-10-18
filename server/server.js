@@ -74,6 +74,18 @@ app.get('/api/counters',
     }
 )
 
+//getting all offered services in the office
+app.get('/api/services',
+    async (req, res) => {
+        try {
+            const result = await dao.listServices();
+            res.json(result);
+        } catch (err) {
+            res.status(503).end();
+        }
+    }
+)
+
 app.get('/api/counters/:counterId/currentTicket', [
     check('counterId').isInt()
 ],

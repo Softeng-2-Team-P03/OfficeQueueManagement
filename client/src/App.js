@@ -15,27 +15,38 @@ import Client from "./Client";
 
 
 function App() {
- 
-  return (
-      <Router>
-          <div>
-              <Switch>
-                  <Route path="/officer">
-                      <Officer/>
-                  </Route>
-                  <Route path="/counter">
-                      <Counter />
-                  </Route>
-                  <Route path="/client">
-                      <Client  />
-                  </Route>
-                  <Route path="/">
-                      <Manager/>
-                  </Route>
-              </Switch>
-          </div>
-      </Router>
-  );
+    const [serviceList, setServiceList] = useState([]);
+
+    /* Function to get all offered services */
+    useEffect(() => {
+        API.getServices()
+            .then((services) => {
+                setServiceList(services);
+            })
+            .catch(err => { throw err });
+        
+    }, [])
+
+    return (
+        <Router>
+            <div>
+                <Switch>
+                    <Route path="/officer">
+                        <Officer />
+                    </Route>
+                    <Route path="/counter">
+                        <Counter />
+                    </Route>
+                    <Route path="/client">
+                        <Client serviceList={serviceList}/>
+                    </Route>
+                    <Route path="/">
+                        <Manager />
+                    </Route>
+                </Switch>
+            </div>
+        </Router>
+    );
 }
 
 export default App;
