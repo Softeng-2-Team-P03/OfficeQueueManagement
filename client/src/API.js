@@ -60,7 +60,7 @@ async function newTicket(service) {
 
 async function newTicketTime(service) {
     //call: GET /api/estimation
-    const response = await fetch(BASEURL + '/services/estimation');
+    const response = await fetch(BASEURL + '/services/estimation?type=' + service);
     const time = await response.json();
 
     if (response.ok) {
