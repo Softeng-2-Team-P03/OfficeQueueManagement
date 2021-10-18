@@ -6,7 +6,8 @@ import API from './API';
 function Client(props) {
 
     const [services, setServices] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [loadingServices, setLoadingServices] = useState(true);
+    const [loadingTicket, setLoadingTicket] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     const [selected, setSelected] = useState('');
@@ -17,7 +18,7 @@ function Client(props) {
         API.getServices()
             .then((services) => {
                 setServices(services);
-                setLoading(false);
+                setLoadingServices(false);
                 setErrorMessage('');
             })
             .catch(err => {
@@ -27,15 +28,14 @@ function Client(props) {
     }, []);
 
     const newTicket = (service) => {
-        setLoading(true);
+        setLoadingTicket(true);
         API.getTicket(service)
             .then((ticket) => {
-                console.log(ticket);
                 setSelected(service);
                 setTicket(ticket.ticketNum);
                 setTime(ticket.ticketTime);
                 setErrorMessage('');
-                setLoading(false);
+                setLoadingTicket(false);
             })
             .catch(err => {
                 setErrorMessage('Error in issueing ticket');
@@ -50,11 +50,11 @@ function Client(props) {
                 <Col xs="3"></Col>
                 <Col xs="6">
                     <h1>Select the service you are looking for</h1>
-                    {loading ? <h3>Loading services <Spinner animation="border" /> </h3>
+                    {loadingServices ? <h3>Loading services <Spinner animation="border" /> </h3>
                         :
                         services.map((service) =>
                             <Row key={service} className="below-nav">
-                                <Button disabled={loading} variant="primary" onClick={() => newTicket(service)} >
+                                <Button disabled={loadingTicket} variant="primary" onClick={() => newTicket(service)} >
                                     {service}
                                 </Button>
                             </Row>
@@ -62,6 +62,7 @@ function Client(props) {
                     }
                     <Row>
                         <h4 style={{ color: 'red', fontWeight: 'bold' }}>{errorMessage}</h4>
+                        {loadingTicket && <h4>Creating ticket...</h4>}
                     </Row>
                     <Row className="below">
                         <Card style={{ width: '18rem' }}>
