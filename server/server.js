@@ -78,7 +78,7 @@ app.get('/api/counters',
 app.get('/api/services',
     async (req, res) => {
         try {
-            const result = await dao.listServices();
+            const result = await officerDao.listServices();
             res.json(result);
         } catch (err) {
             res.status(503).end();
