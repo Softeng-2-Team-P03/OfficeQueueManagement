@@ -258,3 +258,17 @@ exports.updateQueue = (type, operationType) => {
 
   });
 };
+
+exports.createTicket = (serviceName) => {
+  return new Promise((resolve, reject) => {
+    const sql = 'INSERT INTO TICKET(SERVICE_TYPE) VALUES(?)';
+    db.run(sql, serviceName, function (err) {
+      if (err) {
+        console.error(err);
+        reject({error: `Database error during the creation of the ticket`});
+        return;
+      }
+      resolve(this.lastID); //number of inserted row ID
+    });
+  });
+};
