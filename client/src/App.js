@@ -29,6 +29,9 @@ function App() {
                     <Route path="/manager">
                         <Manager />
                     </Route>
+                    <Route path="/choose">
+                        <ChooseCounter />
+                    </Route>
                     <Route path="/">
                         <Client />
                     </Route>
