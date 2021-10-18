@@ -231,6 +231,39 @@ app.get('/api/services/updateQueue', async (req, res) => {
     res.json(tr);
 });
 
+app.post('/api/tickets', isLoggedIn, [
+    check('serviceType').not().isEmpty()
+], async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        return res.status(422).json({ error: "serviceType is empty!" });
+    }
+
+    try {
+        let type = req.params.serviceType;
+        
+        //Adding the  ticket in the ticket table
+        const ticketNum = await officerDao.createTicket(type);
+
+        if (ticketNum.error) {
+            return res.status(404).json(ticketNum); //Problem with the specified service type
+        }
+
+         //increasing the queue by 1 for the specified service type
+        const result = await officerDao.updateQueue(type, 1);
+
+        if (result.error) {
+            return res.status(404).json(result); //Problem with the increase of the queue for the specified service type
+        }
+        //return the ticket number
+        res.status(503).json(ticketNum);
+
+    } catch (err) {
+        res.status(503).json(error);
+    }
+}
+);
+
 /*** Users APIs ***/
 
 // POST /sessions 
