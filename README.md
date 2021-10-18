@@ -17,6 +17,7 @@
 - Route `/officer` here officers can ask for the next ticket compatible with their service type to serve and reset their counter.
 - Route `/manager` here the manager is able to see various statistics
 - Route `/login` a form to be able to log in as officer or manager
+-Route `/choose` after an officer logs in reaches this view where he can choose which counter he wants to control.
 - ...
 
 ## API SERVER [TO COMPLETE]
