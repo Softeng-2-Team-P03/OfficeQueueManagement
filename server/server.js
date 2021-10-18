@@ -219,6 +219,7 @@ app.get('/api/services/updateQueue', [
     query('type').isIn(['SPID', 'Deposit', 'Shipping', 'Withdrawal']),   
     query('operationType').isIn(['1', '2', '3']), 
 ],  async (req, res) => {
+    
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(422).json({ errors: errors.array()  });
