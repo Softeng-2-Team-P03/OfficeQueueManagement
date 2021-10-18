@@ -4,8 +4,15 @@
 GET http://localhost:3001/api/counters/1/nextTicket
 
 ###
+GET http://localhost:3001/api/counters/a/nextTicket
+
+###
 
 GET http://localhost:3001/api/counters/2/currentTicket
+
+###
+
+GET http://localhost:3001/api/counters/a/currentTicket
 
 ###
 
@@ -15,6 +22,22 @@ GET http://localhost:3001/api/counters
 ### Get estimated waiting time for a certain service type
 GET http://localhost:3001/api/services/estimation?type=SPID
 
+
+### Get estimated waiting time for a certain service type invalid
+GET http://localhost:3001/api/services/estimation?type=aaaa
+
+
+
+### Get estimated waiting time for a certain service type
+GET http://localhost:3001/api/services/estimation?type=Deposit
+
+
+### Get estimated waiting time for a certain service type
+GET http://localhost:3001/api/services/estimation?type=Withdrawal
+
+
+### Get estimated waiting time for a certain service type
+GET http://localhost:3001/api/services/estimation?type=Shipping
 
 ### Update queue for a certain service type EG: type=SPID
 ##operationType 1= increase
@@ -26,3 +49,10 @@ GET http://localhost:3001/api/services/updateQueue?type=SPID&operationType=2
 ###operationType 3= reset
 GET http://localhost:3001/api/services/updateQueue?type=SPID&operationType=3
 
+### Update queue for a certain service type  (invalid operation type)
+
+GET http://localhost:3001/api/services/updateQueue?type=aaaa&operationType=7
+
+### Update queue for a certain service type (invalid service type)
+
+GET http://localhost:3001/api/services/updateQueue?type=SPID&operationType=4
