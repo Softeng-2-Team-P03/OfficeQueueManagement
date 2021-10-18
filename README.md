@@ -15,8 +15,8 @@
 - Route `/`:
     - here customers select the service type they need and see the resulting ticket whaile officers can log in through the login button.
 - Route `/officer` here officers can ask for the next ticket compatible with their service type to serve and reset their counter.
-- Route `manager`
-- Route `/login`
+- Route `/manager` here the manager is able to see various statistics
+- Route `/login` a form to be able to log in as officer or manager
 - ...
 
 ## API SERVER [TO COMPLETE]
@@ -55,6 +55,39 @@
     ```
 - Error Response: `422 Unprocessable Entity` (value does not satisfy validators), `503 Service Unavailable`, `404 Not Found` (Services not found, Ticket associated with counterId not found, Ticket associated with service not found...)
 
+### Get the estimated waiting time
+- HTTP Method: `GET` URL `/api/services/estimation?type=serviceType`
+- Description: Retrieve the estimated service time for  certain service Type `serviceType`.
+- Request body: _None_
+- Response: `200 OK` (success)
+- Response body: 
+
+    The estimated waiting time, eg:
+    ```
+    17.4999
+    
+    ```
+- Error Response: `422 Unprocessable Entity` (value does not satisfy validators), `503 Service Unavailable`
+
+### Update the queue counter
+- HTTP Method: `GET` URL `/api/services/updateQueue?type=serviceType&operationType=opnum`
+- Description: Update queue for a certain service type `serviceType` EG: type=SPID
+opnum 1 = increase queue of the specified service type by one.
+opnum 2 = decrease queue of the specified service type by one.
+opnum 3 = reset the queue of the specified service type to zero.
+- Request body: _None_
+- Response: `200 OK` (success)
+- Response body: 
+
+    for an increase (`operationType=1`) of service type "SPID" (`type=SPID`) it returns the requested type and the updated queue couunter number
+    ```
+    {
+     "type": "SPID",
+     "Queue": 2
+    }
+    
+    ```
+- Error Response: `422 Unprocessable Entity` (value does not satisfy validators), `503 Service Unavailable`
 ### ... TO ADD
 
 ### User management
