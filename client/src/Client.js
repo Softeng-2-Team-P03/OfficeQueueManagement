@@ -49,22 +49,29 @@ function Client(props) {
             <Row className="below-nav">
                 <Col xs="3"></Col>
                 <Col xs="6">
-                    <h1>Select the service you are looking for</h1>
+                    <h1 className='text-center'>Select the service you are looking for</h1>
+                    <br />
                     {loadingServices ? <h3>Loading services <Spinner animation="border" /> </h3>
                         :
-                        services.map((service) =>
-                            <Row key={service} className="below-nav">
-                                <Button disabled={loadingTicket} variant="primary" onClick={() => newTicket(service)} >
-                                    {service}
-                                </Button>
-                            </Row>
-                        )
+                        <Row>
+                            <Col xm={{ order: 'last' }}></Col>
+                            {services.map((service) =>
+                                <>
+                                    <Button disabled={loadingTicket} variant="primary" onClick={() => newTicket(service)} >
+                                        {service}
+                                    </Button>&nbsp;
+                                </>
+                            )}
+                            <Col xm={{ order: 'first' }}></Col>
+                        </Row>
                     }
                     <Row>
                         <h4 style={{ color: 'red', fontWeight: 'bold' }}>{errorMessage}</h4>
                         {loadingTicket && <h4>Creating ticket...</h4>}
                     </Row>
-                    <Row className="below">
+                    <br />
+                    <Row>
+                        <Col xm={{ order: 'last' }}></Col>
                         <Card style={{ width: '18rem' }}>
                             <ListGroup variant="flush">
                                 <ListGroup.Item>Servizio selezionato: {selected}</ListGroup.Item>
@@ -72,6 +79,7 @@ function Client(props) {
                                 <ListGroup.Item>Estimated waiting time: {time}</ListGroup.Item>
                             </ListGroup>
                         </Card>
+                        <Col xm={{ order: 'first' }}></Col>
                     </Row>
                 </Col>
             </Row>
