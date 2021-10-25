@@ -79,7 +79,8 @@ sections:
 - Which ones you were not able to achieve? Why?
 
 - Improvement goals for the next sprint and how to achieve them (technical tasks, team coordination, etc.)
-Team coordination : 
+
+   Team coordination : 
   - Keep up to date about the daily project progress.
   - Create a more equal assignement of tasks in terms of effort/time
 
